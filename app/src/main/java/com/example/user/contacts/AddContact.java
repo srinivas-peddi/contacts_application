@@ -11,7 +11,10 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,8 @@ public class AddContact extends AppCompatActivity
     EditText mEmailText;
     ContactPOJO mContactPOJO;
     ContactsTable mContactsTable;
+    Spinner mNumberTypeSpinner;
+    int mNumberType;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -41,6 +46,24 @@ public class AddContact extends AppCompatActivity
                     saveContact(v);
                 }
                 return true;
+            }
+        });
+        mNumberTypeSpinner= findViewById(R.id.number_type);
+        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.number_type_options,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mNumberTypeSpinner.setAdapter(adapter);
+        mNumberTypeSpinner.setSelection(0);
+        mNumberTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                mNumberType=position+1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
             }
         });
         if(getIntent().getExtras()!=null)
@@ -76,7 +99,7 @@ public class AddContact extends AppCompatActivity
                     {
                         if(mContactPOJO ==null)
                         {
-                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim());
+                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim(),mNumberType);
                             if(ContactsHomeScreen.mContacts.contains(mContactPOJO))
                             {
                                 Toast.makeText(this,"Contact Already Exists.\nPlease Change the Name",Toast.LENGTH_SHORT).show();

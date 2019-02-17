@@ -73,7 +73,7 @@ public class ImportService extends IntentService
                 if(!mIsCancelled)
                 {
                     int id=cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),"","");
+                    ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),"","",0);
                     if(!mTempContacts.contains(contactPOJO) && !ContactsHomeScreen.mContacts.contains(contactPOJO))
                     {
                         Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",new String[]{""+id}, null);

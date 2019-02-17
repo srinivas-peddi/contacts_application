@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Contacts</string>
+
+    <string-array name="number_type_options">
+        <item>Home</item>
+        <item>Mobile</item>
+        <item>Work</item>
+        <item>Work Fax</item>
+        <item>Home Fax</item>
+        <item>Pager</item>
+        <item>Other</item>
+    </string-array>
 </resources>

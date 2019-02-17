@@ -7,13 +7,20 @@ public class ContactPOJO implements Comparable<Object>,Serializable
     private String mContactName;
     private String mContactNumber;
     private String mEMailId;
+    private int mNumberType;
 
 
-    public ContactPOJO(String pName, String pNumber, String pEMailId)
+    public ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType)
     {
         mContactName = pName;
         mContactNumber = pNumber;
         mEMailId = pEMailId;
+        mNumberType=pNumberType;
+    }
+
+    public void setNumberType(int pNumberType)
+    {
+        this.mNumberType = pNumberType;
     }
 
     public void setmContactName(String mContactName) {
@@ -41,6 +48,10 @@ public class ContactPOJO implements Comparable<Object>,Serializable
     String getEMailId()
     {
         return mEMailId;
+    }
+
+    public int getNumberType() {
+        return mNumberType;
     }
 
     public String toString()

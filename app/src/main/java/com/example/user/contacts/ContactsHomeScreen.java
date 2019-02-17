@@ -114,7 +114,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             Cursor cursor= contactsTable.fetch();
             if(cursor.moveToFirst())
             {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2)));
+                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),0));
             }
             else
             {
@@ -122,7 +122,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             }
             while(cursor.moveToNext())
             {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2)));
+                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),0));
             }
             return null;
         }
