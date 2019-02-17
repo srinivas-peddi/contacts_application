@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="4dp"
+    android:paddingLeft="16dp"
+    android:paddingBottom="4dp">
+
+
+    <TextView
+        android:id="@+id/contact_symbol"
+        android:layout_width="40dp"
+        android:layout_weight="0"
+        android:layout_height="40dp"
+        android:background="@drawable/name_circle_shape"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textColor="#666666"
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/contact_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="#000000"
+            android:singleLine="true"
+            android:ellipsize="none"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/number_item"
+            android:textColor="#656565"
+            android:singleLine="true"
+            android:ellipsize="none"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/call_email_button"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_weight="0"
+        android:layout_gravity="center_vertical"
+        android:focusable="false" />
+</LinearLayout>
