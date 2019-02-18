@@ -194,6 +194,10 @@ public class DisplayContact extends AppCompatActivity
         alertDialog.show();
     }
 
+    /*
+    Comment 5
+     */
+
     public void editContact()
     {
         startActivityForResult(new Intent(this,AddContact.class).putExtra("contactobj",mContactPOJO).putExtra("position",getIntent().getExtras().getInt("position")),EDIT_CONTACT);

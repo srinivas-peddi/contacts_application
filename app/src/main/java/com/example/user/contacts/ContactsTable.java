@@ -39,6 +39,8 @@ public class ContactsTable
         mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
     }
 
+    //Comment 3
+
     public Cursor fetch()
     {
         String[] columns = new String[] { DatabaseHelper.NAME, DatabaseHelper.NUMBER, DatabaseHelper.EMAIL, DatabaseHelper.NUMBER_TYPE, DatabaseHelper.PIC_URI};
