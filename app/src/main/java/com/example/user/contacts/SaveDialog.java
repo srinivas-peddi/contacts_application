@@ -21,7 +21,7 @@ public class SaveDialog extends Activity
     public void saveNumber(View view)
     {
         Intent intent1 = new Intent(this,AddContact.class);
-        intent1.putExtra("contactobj",new ContactPOJO("",getIntent().getExtras().getString("contactNumber"),"",0));
+        intent1.putExtra("contactobj",new ContactPOJO("",getIntent().getExtras().getString("contactNumber"),"",0,null));
         intent1.putExtra("position",-1);
         startActivity(intent1);
         finish();

@@ -107,7 +107,7 @@ public class AddContact extends AppCompatActivity
                     {
                         if(mContactPOJO ==null)
                         {
-                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim(),mNumberType);
+                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim(),mNumberType,null);
                             if(ContactsHomeScreen.mContacts.contains(mContactPOJO))
                             {
                                 Toast.makeText(this,"Contact Already Exists.\nPlease Change the Name",Toast.LENGTH_SHORT).show();
@@ -116,7 +116,7 @@ public class AddContact extends AppCompatActivity
                             else
                             {
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
-                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType());
+                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),mContactPOJO.getPictureUri().toString());
                                 setResult(RESULT_OK,new Intent());
                                 finish();
                             }
@@ -132,7 +132,7 @@ public class AddContact extends AppCompatActivity
                                 mContactPOJO.setmContactNumber(mNumberText.getText().toString().trim());
                                 mContactPOJO.setmEMailId(mEmailText.getText().toString().trim());
                                 mContactPOJO.setNumberType(mNumberType);
-                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType());
+                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),mContactPOJO.getPictureUri().toString());
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
                                 setResult(RESULT_FIRST_USER,new Intent());
                                 finish();

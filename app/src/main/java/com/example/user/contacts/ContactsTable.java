@@ -28,19 +28,20 @@ public class ContactsTable
         mDatabaseHelper.close();
     }
 
-    public void save(String pName, String pNumber, String pEmail,int pNumberType)
+    public void save(String pName, String pNumber, String pEmail,int pNumberType, String pPicUri)
     {
         ContentValues addNewContact=new ContentValues();
         addNewContact.put(DatabaseHelper.NAME,pName);
         addNewContact.put(DatabaseHelper.NUMBER,pNumber);
         addNewContact.put(DatabaseHelper.EMAIL,pEmail);
         addNewContact.put(DatabaseHelper.NUMBER_TYPE,pNumberType);
+        addNewContact.put(DatabaseHelper.PIC_URI,pPicUri);
         mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
     }
 
     public Cursor fetch()
     {
-        String[] columns = new String[] { DatabaseHelper.NAME, DatabaseHelper.NUMBER, DatabaseHelper.EMAIL };
+        String[] columns = new String[] { DatabaseHelper.NAME, DatabaseHelper.NUMBER, DatabaseHelper.EMAIL, DatabaseHelper.NUMBER_TYPE, DatabaseHelper.PIC_URI};
         Cursor cursor = mContactDB.query(DatabaseHelper.TABLE_NAME, columns, null, null, null, null, DatabaseHelper.NAME+" ASC");
         return cursor;
     }
@@ -50,10 +51,10 @@ public class ContactsTable
         return mContactDB.query(DatabaseHelper.TABLE_NAME,new String[]{DatabaseHelper.NUMBER},DatabaseHelper.NUMBER+"=?",new String[]{pNumber},null,null,null);
     }
 
-    public void update(String pOldName,String pNewName, String pNumber, String pEmail, int pNumberType)
+    public void update(String pOldName,String pNewName, String pNumber, String pEmail, int pNumberType, String pPicUri)
     {
         delete(pOldName);
-        save(pNewName,pNumber,pEmail,pNumberType);
+        save(pNewName,pNumber,pEmail,pNumberType,pPicUri);
     }
 
     public void delete(String pName)

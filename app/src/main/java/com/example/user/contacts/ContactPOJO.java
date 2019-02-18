@@ -1,21 +1,26 @@
 package com.example.user.contacts;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 
 public class ContactPOJO implements Comparable<Object>,Serializable
 {
+
     private String mContactName;
     private String mContactNumber;
     private String mEMailId;
     private int mNumberType;
+    private String mPictureUri;
 
 
-    public ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType)
+    public ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType,String pPictureUri)
     {
         mContactName = pName;
         mContactNumber = pNumber;
         mEMailId = pEMailId;
         mNumberType=pNumberType;
+        mPictureUri=pPictureUri;
     }
 
     public void setNumberType(int pNumberType)
@@ -35,6 +40,11 @@ public class ContactPOJO implements Comparable<Object>,Serializable
         this.mEMailId = mEMailId;
     }
 
+    public void setPictureUri(String pPictureUri)
+    {
+        this.mPictureUri = pPictureUri;
+    }
+
     String getContactName()
     {
         return this.mContactName;
@@ -48,6 +58,11 @@ public class ContactPOJO implements Comparable<Object>,Serializable
     String getEMailId()
     {
         return mEMailId;
+    }
+
+    public String getPictureUri()
+    {
+        return mPictureUri;
     }
 
     public int getNumberType() {

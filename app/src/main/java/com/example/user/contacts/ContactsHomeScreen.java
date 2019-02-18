@@ -53,7 +53,6 @@ public class ContactsHomeScreen extends AppCompatActivity
     ListView mListView;
     ProgressBar mProgressBar;
     DBReadAsyncTask mReadDB;
-//    ImportAsyncTask mReadInternalContacts;
     ImportService mImportService;
     AlertDialog.Builder mAlertDialogBuilder;
     AlertDialog mAlertDialog;
@@ -114,7 +113,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             Cursor cursor= contactsTable.fetch();
             if(cursor.moveToFirst())
             {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3)));
+                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getString(4)));
             }
             else
             {
@@ -122,7 +121,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             }
             while(cursor.moveToNext())
             {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3)));
+                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getString(4)));
             }
             return null;
         }
@@ -366,7 +365,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             else if(resultCode==RESULT_FIRST_USER)
             {
                 ContactPOJO contactPOJO=(ContactPOJO) data.getExtras().getSerializable("contactobj");
-                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType());
+                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType(),null);
                 Toast.makeText(this,"Contact Updated",Toast.LENGTH_SHORT).show();
                 mContacts.set(mPosition,contactPOJO);
                 Collections.sort(mContacts);

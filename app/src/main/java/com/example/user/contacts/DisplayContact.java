@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class DisplayContact extends AppCompatActivity
     ContactPOJO mContactPOJO;
     Toolbar mToolbar;
     TextView mNumberTypeText;
+    ImageView mContactImage;
     Menu menu;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -47,6 +49,7 @@ public class DisplayContact extends AppCompatActivity
         mNumberText =findViewById(R.id.number_display__text);
         mEmailText =findViewById(R.id.email_display_text);
         mNumberTypeText = findViewById(R.id.number_type_display);
+        mContactImage= findViewById(R.id.expandedImage);
         if(!mContactPOJO.getContactNumber().equals(""))
         {
             mNumberText.setText(mContactPOJO.getContactNumber());
@@ -95,6 +98,16 @@ public class DisplayContact extends AppCompatActivity
         {
             LinearLayout linearLayout= findViewById(R.id.email_layout);
             linearLayout.setVisibility(View.GONE);
+        }
+        if(!mContactPOJO.getPictureUri().equals(""))
+        {
+            mContactImage.setImageURI(null);
+            mContactImage.setImageURI(Uri.parse(mContactPOJO.getPictureUri()));
+            mContactImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
+        else
+        {
+            mContactImage.setImageResource(R.drawable.user);
         }
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
