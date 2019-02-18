@@ -28,12 +28,13 @@ public class ContactsTable
         mDatabaseHelper.close();
     }
 
-    public void save(String pName, String pNumber, String pEmail)
+    public void save(String pName, String pNumber, String pEmail,int pNumberType)
     {
         ContentValues addNewContact=new ContentValues();
         addNewContact.put(DatabaseHelper.NAME,pName);
         addNewContact.put(DatabaseHelper.NUMBER,pNumber);
         addNewContact.put(DatabaseHelper.EMAIL,pEmail);
+        addNewContact.put(DatabaseHelper.NUMBER_TYPE,pNumberType);
         mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
     }
 
@@ -49,10 +50,10 @@ public class ContactsTable
         return mContactDB.query(DatabaseHelper.TABLE_NAME,new String[]{DatabaseHelper.NUMBER},DatabaseHelper.NUMBER+"=?",new String[]{pNumber},null,null,null);
     }
 
-    public void update(String pOldName,String pNewName, String pNumber, String pEmail)
+    public void update(String pOldName,String pNewName, String pNumber, String pEmail, int pNumberType)
     {
         delete(pOldName);
-        save(pNewName,pNumber,pEmail);
+        save(pNewName,pNumber,pEmail,pNumberType);
     }
 
     public void delete(String pName)

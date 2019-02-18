@@ -80,6 +80,7 @@ public class ImportService extends IntentService
                         if(phoneCursor!=null && phoneCursor.moveToFirst())
                         {
                             contactPOJO.setmContactNumber(phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                            contactPOJO.setNumberType(phoneCursor.getInt(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
 
                         }
                         phoneCursor.close();
@@ -108,7 +109,7 @@ public class ImportService extends IntentService
             contactsTable.open();
             for(ContactPOJO i:mTempContacts)
             {
-                contactsTable.save(i.getContactName(),i.getContactNumber(),i.getEMailId());
+                contactsTable.save(i.getContactName(),i.getContactNumber(),i.getEMailId(),i.getNumberType());
             }
             contactsTable.close();
             mIsCompleted=true;

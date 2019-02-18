@@ -114,7 +114,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             Cursor cursor= contactsTable.fetch();
             if(cursor.moveToFirst())
             {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),0));
+                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3)));
             }
             else
             {
@@ -122,7 +122,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             }
             while(cursor.moveToNext())
             {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),0));
+                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3)));
             }
             return null;
         }
@@ -329,53 +329,6 @@ public class ContactsHomeScreen extends AppCompatActivity
             if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED)
             {
                 startImportService();
-//                Intent importIntent = new Intent(this,ImportService.class);
-//                startService(importIntent);
-//                if(mServiceConnection==null)
-//                {
-//                    mServiceConnection= new ServiceConnection() {
-//                        @Override
-//                        public void onServiceConnected(ComponentName name, IBinder service)
-//                        {
-//                            ImportService.ImportServiceBinder importServiceBinder= (ImportService.ImportServiceBinder) service;
-//                            mImportService= importServiceBinder.getService();
-//                        }
-//
-//                        @Override
-//                        public void onServiceDisconnected(ComponentName name)
-//                        {
-//                            mImportService=null;
-//                        }
-//                    };
-//                }
-//                mListView.setVisibility(View.GONE);
-//                mAlertDialogBuilder = new AlertDialog.Builder(this);
-//                View dialogBuilder= getLayoutInflater().inflate(R.layout.custom_dialog,null);
-//                mAlertDialogBuilder.setView(dialogBuilder);
-//                mAlertDialogBuilder.setTitle("Importing Contacts");
-//                mProgressBarForImport = dialogBuilder.findViewById(R.id.progress_horizontal);
-//                mCancelButton = dialogBuilder.findViewById(R.id.cancel_dialog_button);
-//                mProgressText = dialogBuilder.findViewById(R.id.progress_text);
-//                mCancelButton.setOnClickListener(new View.OnClickListener()
-//                {
-//                    @Override
-//                    public void onClick(View v)
-//                    {
-//                        unbindService(mServiceConnection);
-//                        mImportService.cancelService();
-//                        mAlertDialog.hide();
-//                        mListView.setVisibility(View.VISIBLE);
-//                    }
-//                });
-//
-//                mAlertDialog = mAlertDialogBuilder.create();
-//                mAlertDialog.show();
-//                while(mImportService.mIsCompleted)
-//                {
-//                    mProgressBarForImport.setProgress(mImportService.getProgress());
-//                }
-////                mReadInternalContacts=new ImportAsyncTask(this);
-////                mReadInternalContacts.execute();
             }
             else
             {
@@ -413,7 +366,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             else if(resultCode==RESULT_FIRST_USER)
             {
                 ContactPOJO contactPOJO=(ContactPOJO) data.getExtras().getSerializable("contactobj");
-                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId());
+                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType());
                 Toast.makeText(this,"Contact Updated",Toast.LENGTH_SHORT).show();
                 mContacts.set(mPosition,contactPOJO);
                 Collections.sort(mContacts);

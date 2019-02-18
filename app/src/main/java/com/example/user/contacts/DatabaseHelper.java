@@ -12,6 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String NAME = "Name";
     public static final String NUMBER = "Contact_No";
     public static final String EMAIL = "Email_ID";
+    public static final String NUMBER_TYPE= "Number_type";
     public static final int VERSION=1;
 
 
@@ -24,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        db.execSQL("CREATE TABLE "+TABLE_NAME+" ("+ NAME +" TEXT PRIMARY KEY,"+ NUMBER +" TEXT, "+ EMAIL +" TEXT)");
+        db.execSQL("CREATE TABLE "+TABLE_NAME+" ("+ NAME +" TEXT PRIMARY KEY,"+ NUMBER +" TEXT, "+ EMAIL +" TEXT, "+ NUMBER_TYPE +" INTEGER)");
     }
 
     @Override

@@ -72,6 +72,14 @@ public class AddContact extends AppCompatActivity
             mNameText.setText(mContactPOJO.getContactName());
             mNumberText.setText(mContactPOJO.getContactNumber());
             mEmailText.setText(mContactPOJO.getEMailId());
+            if(mContactPOJO.getNumberType()<8)
+            {
+                mNumberTypeSpinner.setSelection(mContactPOJO.getNumberType()-1);
+            }
+            else
+            {
+                mNumberTypeSpinner.setSelection(6);
+            }
         }
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
@@ -108,7 +116,7 @@ public class AddContact extends AppCompatActivity
                             else
                             {
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
-                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId());
+                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType());
                                 setResult(RESULT_OK,new Intent());
                                 finish();
                             }
@@ -123,7 +131,8 @@ public class AddContact extends AppCompatActivity
 
                                 mContactPOJO.setmContactNumber(mNumberText.getText().toString().trim());
                                 mContactPOJO.setmEMailId(mEmailText.getText().toString().trim());
-                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId());
+                                mContactPOJO.setNumberType(mNumberType);
+                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType());
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
                                 setResult(RESULT_FIRST_USER,new Intent());
                                 finish();

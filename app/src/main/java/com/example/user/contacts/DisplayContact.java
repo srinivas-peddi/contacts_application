@@ -28,6 +28,7 @@ public class DisplayContact extends AppCompatActivity
     TextView mEmailText;
     ContactPOJO mContactPOJO;
     Toolbar mToolbar;
+    TextView mNumberTypeText;
     Menu menu;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -45,9 +46,41 @@ public class DisplayContact extends AppCompatActivity
         mToolbar.setTitleTextColor(Color.WHITE);
         mNumberText =findViewById(R.id.number_display__text);
         mEmailText =findViewById(R.id.email_display_text);
+        mNumberTypeText = findViewById(R.id.number_type_display);
         if(!mContactPOJO.getContactNumber().equals(""))
         {
             mNumberText.setText(mContactPOJO.getContactNumber());
+            switch (mContactPOJO.getNumberType())
+            {
+                case 1:
+                    mNumberTypeText.setText("Home");
+                    break;
+
+                case 2:
+                    mNumberTypeText.setText("Mobile");
+                    break;
+
+                case 3:
+                    mNumberTypeText.setText("Work");
+                    break;
+
+                case 4:
+                    mNumberTypeText.setText("Work Fax");
+                    break;
+
+                case 5:
+                    mNumberTypeText.setText("Home Fax");
+                    break;
+
+                case 6:
+                    mNumberTypeText.setText("Pager");
+                    break;
+
+                default:
+                    mNumberTypeText.setText("Other");
+                    break;
+
+            }
         }
         else
         {
