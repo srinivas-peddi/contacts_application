@@ -127,11 +127,6 @@ public class ContactsHomeScreen extends AppCompatActivity
         }
     }
 
-    //Comment 1
-
-
-    //Comment 2
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {

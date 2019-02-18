@@ -101,7 +101,6 @@ public class ImportService extends IntentService
                 mContactsHomeScreenObj.setProgressAndImportContacts(progress*100/totalCount);
             }while(cursor.moveToNext());
         }
-        //Cooment 4
         cursor.close();
         if(!mIsCancelled)
         {
