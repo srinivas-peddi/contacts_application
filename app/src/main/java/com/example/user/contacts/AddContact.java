@@ -115,7 +115,7 @@ public class AddContact extends AppCompatActivity
                     {
                         if(mContactPOJO ==null)
                         {
-                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim(),mNumberType,"",mAddressText.getText().toString().trim(),mWebsiteText.getText().toString().trim());
+                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim(),mNumberType,"","",mWebsiteText.getText().toString().trim());
                             if(ContactsHomeScreen.mContacts.contains(mContactPOJO))
                             {
                                 Toast.makeText(this,"Contact Already Exists.\nPlease Change the Name",Toast.LENGTH_SHORT).show();

@@ -8,6 +8,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 {
 
     public static final String DB_NAME="Contacts.db";
+    public static final String ID="Id";
     public static final String TABLE_NAME="contacts_table";
     public static final String NAME = "Name";
     public static final String NUMBER = "Contact_No";
@@ -28,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        db.execSQL("CREATE TABLE "+TABLE_NAME+" ("+ NAME +" TEXT PRIMARY KEY,"+ NUMBER +" TEXT, "+ EMAIL +" TEXT, "+ NUMBER_TYPE +" INTEGER, "+PIC_URI+" TEXT, "+ADDRESS+" TEXT,"+WEBSITE+" TEXT)");
+        db.execSQL("CREATE TABLE "+TABLE_NAME+" ("+ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+ NAME +" TEXT,"+ NUMBER +" TEXT, "+ EMAIL +" TEXT, "+ NUMBER_TYPE +" INTEGER, "+PIC_URI+" TEXT, "+ADDRESS+" TEXT,"+WEBSITE+" TEXT)");
     }
 
     @Override

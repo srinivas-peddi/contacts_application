@@ -90,15 +90,18 @@ public class ImportService extends IntentService
                         detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS},ContactsContract.CommonDataKinds.StructuredPostal.CONTACT_ID +"= ?",new String[]{""+id},null);
                         if(detailCursor!=null && detailCursor.moveToFirst())
                         {
-                            contactPOJO.setAddress(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS)));
+                            contactPOJO.setAddress(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS))!=null?detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS)):"");
                         }
                         detailCursor= contentResolver.query(ContactsContract.Data.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.Website.URL},ContactsContract.Data.CONTACT_ID + "="+ id+" AND " + ContactsContract.Data.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE + "'",null,null,null);
                         if(detailCursor!=null && detailCursor.moveToFirst())
                         {
-                            contactPOJO.setWebsite(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)));
+                            contactPOJO.setWebsite(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL))!=null?detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)):"");
                         }
                         mTempContacts.add(contactPOJO);
-                        detailCursor.close();
+                        if(!detailCursor.isClosed())
+                        {
+                            detailCursor.close();
+                        }
                     }
                     progress++;
                 }

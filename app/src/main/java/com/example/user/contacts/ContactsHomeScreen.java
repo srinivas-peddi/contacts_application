@@ -199,7 +199,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             case R.id.import_contacts:
                 if(ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.READ_CONTACTS)!=PackageManager.PERMISSION_GRANTED)
                 {
-                    if(ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_CONTACTS))
+                    if(!ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_CONTACTS))
                     {
                         Toast.makeText(this,"Contacts Permission is required to Import Contacts",Toast.LENGTH_SHORT).show();
                         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},PERMISSION_FOR_READ_CONTACTS);
