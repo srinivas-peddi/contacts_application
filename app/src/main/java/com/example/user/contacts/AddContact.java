@@ -52,7 +52,6 @@ public class AddContact extends AppCompatActivity
         ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.number_type_options,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mNumberTypeSpinner.setAdapter(adapter);
-        mNumberTypeSpinner.setSelection(0);
         mNumberTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -116,7 +115,7 @@ public class AddContact extends AppCompatActivity
                             else
                             {
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
-                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),mContactPOJO.getPictureUri().toString());
+                                mContactsTable.saveSingleContact(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),null);
                                 setResult(RESULT_OK,new Intent());
                                 finish();
                             }
@@ -132,7 +131,7 @@ public class AddContact extends AppCompatActivity
                                 mContactPOJO.setmContactNumber(mNumberText.getText().toString().trim());
                                 mContactPOJO.setmEMailId(mEmailText.getText().toString().trim());
                                 mContactPOJO.setNumberType(mNumberType);
-                                mContactsTable.save(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),mContactPOJO.getPictureUri().toString());
+                                mContactsTable.saveSingleContact(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),mContactPOJO.getPictureUri().toString());
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
                                 setResult(RESULT_FIRST_USER,new Intent());
                                 finish();

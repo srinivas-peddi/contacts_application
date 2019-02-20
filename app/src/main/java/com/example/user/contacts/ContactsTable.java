@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
 public class ContactsTable
 {
     private DatabaseHelper mDatabaseHelper;
@@ -28,7 +30,7 @@ public class ContactsTable
         mDatabaseHelper.close();
     }
 
-    public void save(String pName, String pNumber, String pEmail,int pNumberType, String pPicUri)
+    public void saveSingleContact(String pName,String pNumber, String pEmail, int pNumberType, String pPicUri)
     {
         ContentValues addNewContact=new ContentValues();
         addNewContact.put(DatabaseHelper.NAME,pName);
@@ -37,6 +39,25 @@ public class ContactsTable
         addNewContact.put(DatabaseHelper.NUMBER_TYPE,pNumberType);
         addNewContact.put(DatabaseHelper.PIC_URI,pPicUri);
         mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
+    }
+    {
+
+    }
+
+    public void save(ArrayList<ContactPOJO> pContacts)
+    {
+        ContentValues addNewContact=new ContentValues();
+        for(ContactPOJO i:pContacts)
+        {
+            addNewContact.put(DatabaseHelper.NAME,i.getContactName());
+            addNewContact.put(DatabaseHelper.NUMBER,i.getContactNumber());
+            addNewContact.put(DatabaseHelper.EMAIL,i.getEMailId());
+            addNewContact.put(DatabaseHelper.NUMBER_TYPE,i.getNumberType());
+            addNewContact.put(DatabaseHelper.PIC_URI,i.getPictureUri());
+            mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
+            addNewContact.clear();
+        }
+
     }
 
     public Cursor fetch()
@@ -54,7 +75,7 @@ public class ContactsTable
     public void update(String pOldName,String pNewName, String pNumber, String pEmail, int pNumberType, String pPicUri)
     {
         delete(pOldName);
-        save(pNewName,pNumber,pEmail,pNumberType,pPicUri);
+        saveSingleContact(pNewName,pNumber,pEmail,pNumberType,pPicUri);
     }
 
     public void delete(String pName)

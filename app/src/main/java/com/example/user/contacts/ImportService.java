@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.ContactsContract;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -46,9 +45,9 @@ public class ImportService extends IntentService
         mContactsHomeScreenObj =pUpdateObj;
     }
 
-    public class ImportServiceBinder extends Binder
+    class ImportServiceBinder extends Binder
     {
-        public ImportService getService()
+        ImportService getService()
         {
             return ImportService.this;
         }
@@ -72,17 +71,16 @@ public class ImportService extends IntentService
                     ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),"","",0,"");
                     if(!mTempContacts.contains(contactPOJO) && !ContactsHomeScreen.mContacts.contains(contactPOJO))
                     {
-                        Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",new String[]{""+id}, null);
-                        if(phoneCursor!=null && phoneCursor.moveToFirst())
+                        Cursor detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",new String[]{""+id}, null);
+                        if(detailCursor!=null && detailCursor.moveToFirst())
                         {
-                            contactPOJO.setmContactNumber(phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                            contactPOJO.setNumberType(phoneCursor.getInt(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
+                            contactPOJO.setmContactNumber(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                            contactPOJO.setNumberType(detailCursor.getInt(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
                         }
-                        phoneCursor.close();
-                        Cursor emailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",new String[]{""+id},null);
-                        if(emailCursor!=null && emailCursor.moveToFirst())
+                        detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",new String[]{""+id},null);
+                        if(detailCursor!=null && detailCursor.moveToFirst())
                         {
-                            contactPOJO.setmEMailId(emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)));
+                            contactPOJO.setmEMailId(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)));
                         }
 
                         if(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI))!=null)
@@ -91,6 +89,7 @@ public class ImportService extends IntentService
                         }
 
                         mTempContacts.add(contactPOJO);
+                        detailCursor.close();
                     }
                     progress++;
                 }
@@ -108,14 +107,10 @@ public class ImportService extends IntentService
             Collections.sort(ContactsHomeScreen.mContacts);
             ContactsTable contactsTable=new ContactsTable(getApplicationContext());
             contactsTable.open();
-            for(ContactPOJO i:mTempContacts)
-            {
-                contactsTable.save(i.getContactName(),i.getContactNumber(),i.getEMailId(),i.getNumberType(),i.getPictureUri());
-            }
+            contactsTable.save(mTempContacts);
             contactsTable.close();
             mIsCompleted=true;
             mContactsHomeScreenObj.setProgressAndImportContacts(progress*100/totalCount);
-
         }
         mTempContacts.clear();
     }

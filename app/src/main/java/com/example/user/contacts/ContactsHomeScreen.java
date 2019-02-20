@@ -39,9 +39,6 @@ import java.util.List;
 
 public class ContactsHomeScreen extends AppCompatActivity
 {
-
-    private static final String TAG = "ContactsHomeScreen";
-
     private static final int DISPLAY_EDIT_DELETE_CONTACT = 30;
 
     private static final int PERMISSION_FOR_READ_CONTACTS=100;
@@ -59,7 +56,6 @@ public class ContactsHomeScreen extends AppCompatActivity
     ProgressBar mProgressBarForImport;
     Button mCancelButton;
     TextView mProgressText;
-    boolean mIsBound;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -96,14 +92,7 @@ public class ContactsHomeScreen extends AppCompatActivity
         protected void onPostExecute(Void aVoid)
         {
             mProgressBar.setVisibility(View.GONE);
-            Collections.sort(mContacts);
             mListView.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values)
-        {
-            super.onProgressUpdate(values);
         }
 
         @Override
@@ -111,17 +100,19 @@ public class ContactsHomeScreen extends AppCompatActivity
         {
             ContactsTable contactsTable=contactsTables[0];
             Cursor cursor= contactsTable.fetch();
+            ContactPOJO contactPOJO= new ContactPOJO();;
             if(cursor.moveToFirst())
             {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getString(4)));
-            }
-            else
-            {
-                return null;
-            }
-            while(cursor.moveToNext())
-            {
-                mContacts.add(new ContactPOJO(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getString(4)));
+                do
+                {
+                    contactPOJO.setmContactName(cursor.getString(0));
+                    contactPOJO.setmContactNumber(cursor.getString(1));
+                    contactPOJO.setmEMailId(cursor.getString(2));
+                    contactPOJO.setNumberType(cursor.getInt(3));
+                    contactPOJO.setPictureUri(cursor.getString(4));
+                    mContacts.add(contactPOJO);
+                }while(cursor.moveToNext());
+                Collections.sort(mContacts);
             }
             return null;
         }
@@ -141,45 +132,49 @@ public class ContactsHomeScreen extends AppCompatActivity
         final ListView listView= findViewById(R.id.contact_list);
         listView.setAdapter(mCustomAdapter);
         listView.setClickable(true);
+        listView.setFocusable(true);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 Object o= listView.getItemAtPosition(position);
                 ContactPOJO contactPOJO= (ContactPOJO) o;
-                if(view.getId()==R.id.call_email_button)
+
+                switch(view.getId())
                 {
-                    if(!contactPOJO.getContactNumber().equals(""))
-                    {
-                        Intent intent=new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:"+ contactPOJO.getContactNumber()));
-                        if(intent.resolveActivity(getPackageManager())!=null)
+                    case R.id.call_email_button:
+                        if(!contactPOJO.getContactNumber().equals(""))
                         {
-                            startActivity(new Intent(intent));
+                            Intent intent=new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:"+ contactPOJO.getContactNumber()));
+                            if(intent.resolveActivity(getPackageManager())!=null)
+                            {
+                                startActivity(intent);
+                            }
+                            else
+                            {
+                                Toast.makeText(getBaseContext(),"No Dialer found to Dial Number",Toast.LENGTH_SHORT).show();
+                            }
                         }
                         else
                         {
-                            Toast.makeText(getBaseContext(),"No Dialer found to Dial Number",Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(Intent.ACTION_SENDTO);
+                            intent.setData(Uri.parse("mailto:"+ contactPOJO.getEMailId()));
+                            if(intent.resolveActivity(getPackageManager())!=null)
+                            {
+                                startActivity(intent);
+                            }
+                            else
+                            {
+                                Toast.makeText(getBaseContext(),"No Mail Application found To Send Mail",Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                    else
-                    {
-                        Intent intent=new Intent(Intent.ACTION_SENDTO);
-                        intent.setData(Uri.parse("mailto:"+ contactPOJO.getEMailId()));
-                        if(intent.resolveActivity(getPackageManager())!=null)
-                        {
-                            startActivity(intent);
-                        }
-                        else
-                        {
-                            Toast.makeText(getBaseContext(),"No Mail Application found To Send Mail",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                else
-                {
-                    mPosition=position;
-                    startActivityForResult(new Intent(getBaseContext(),DisplayContact.class).putExtra("contactobj",contactPOJO).putExtra("position",position), DISPLAY_EDIT_DELETE_CONTACT);
+                        break;
+
+                    default:
+                        mPosition=position;
+                        startActivityForResult(new Intent(getBaseContext(),DisplayContact.class).putExtra("contactobj",contactPOJO).putExtra("position",position), DISPLAY_EDIT_DELETE_CONTACT);
+                        break;
                 }
             }
         });
@@ -268,37 +263,30 @@ public class ContactsHomeScreen extends AppCompatActivity
             }
         });
         mAlertDialog = mAlertDialogBuilder.create();
-        mListView.setVisibility(View.GONE);
+        mListView.setVisibility(View.INVISIBLE);
         mAlertDialog.show();
         startService(importIntent);
     }
 
     void setProgressAndImportContacts(final int pProgress)
     {
-        if(!mImportService.mIsCompleted)
-        {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run()
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                if(!mImportService.mIsCompleted)
                 {
                     mProgressBarForImport.setProgress(pProgress);
-                    mProgressText.setText(""+pProgress);
+                    mProgressText.setText(pProgress+"%");
                 }
-            });
-        }
-        else
-        {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run()
+                else
                 {
                     mAlertDialog.hide();
                     mCustomAdapter.notifyDataSetChanged();
                     mListView.setVisibility(View.VISIBLE);
                 }
-            });
-        }
-
+            }
+        });
     }
 
     ServiceConnection mServiceConnection=new ServiceConnection()
@@ -308,17 +296,14 @@ public class ContactsHomeScreen extends AppCompatActivity
         {
             ImportService.ImportServiceBinder importServiceBinder= (ImportService.ImportServiceBinder) service;
             mImportService= importServiceBinder.getService();
-            mIsBound=true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name)
         {
-            mIsBound=false;
+
         }
     };
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
@@ -352,8 +337,7 @@ public class ContactsHomeScreen extends AppCompatActivity
                 Toast.makeText(this,"Contact Discarded",Toast.LENGTH_SHORT).show();
             }
         }
-
-        if(requestCode== DISPLAY_EDIT_DELETE_CONTACT)
+        else if(requestCode== DISPLAY_EDIT_DELETE_CONTACT)
         {
             if(resultCode== RESULT_OK)
             {
@@ -392,43 +376,49 @@ public class ContactsHomeScreen extends AppCompatActivity
 class CustomAdapter extends ArrayAdapter<ContactPOJO>
 {
 
-    public CustomAdapter(Context context, int resource, List<ContactPOJO> objects)
+    CustomAdapter(Context context, int resource, List<ContactPOJO> objects)
     {
         super(context, resource, objects);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public View getView(final int position, View convertView, @NonNull final ViewGroup parent)
     {
-        final int itemPosition=position;
-        final ViewGroup itemParent=parent;
         if(convertView==null)
         {
             convertView=LayoutInflater.from(getContext()).inflate(R.layout.list_view,parent,false);
         }
-        final ContactPOJO contactPOJO= getItem(itemPosition);
+        ContactPOJO contactPOJO= getItem(position);
         TextView contactSymbol= convertView.findViewById(R.id.contact_symbol);
         TextView contactNameDisplay= convertView.findViewById(R.id.contact_item);
         TextView contactNumberDisplay= convertView.findViewById(R.id.number_item);
-        Button button= convertView.findViewById(R.id.call_email_button);
-        contactSymbol.setText(contactPOJO.getContactName().substring(0,1).toUpperCase());
-        contactNameDisplay.setText(contactPOJO.getContactName());
-        if(!contactPOJO.getContactNumber().equals(""))
-        {
-            contactNumberDisplay.setText(contactPOJO.getContactNumber());
-            button.setBackgroundResource(R.drawable.ic_call_img);
+        Button callOrEmailButton= convertView.findViewById(R.id.call_email_button);
+        if (contactPOJO != null) {
+            contactSymbol.setText(contactPOJO.getContactName().substring(0,1).toUpperCase());
         }
-        else
-        {
-            contactNumberDisplay.setText(contactPOJO.getEMailId());
-            button.setBackgroundResource(R.drawable.ic_email_img);
+        if (contactPOJO != null) {
+            contactNameDisplay.setText(contactPOJO.getContactName());
         }
-        button.setOnClickListener(new View.OnClickListener()
+        if (contactPOJO != null) {
+            if(!contactPOJO.getContactNumber().equals(""))
+            {
+                contactNumberDisplay.setText(contactPOJO.getContactNumber());
+                callOrEmailButton.setBackgroundResource(R.drawable.ic_call_img);
+            }
+            else
+            {
+                contactNumberDisplay.setText(contactPOJO.getEMailId());
+                callOrEmailButton.setBackgroundResource(R.drawable.ic_email_img);
+
+            }
+        }
+        callOrEmailButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                ((ListView) itemParent).performItemClick(v, itemPosition, 0);
+                ((ListView) parent).performItemClick(v, position, 0);
             }
         });
         return convertView;

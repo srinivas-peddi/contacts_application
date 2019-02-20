@@ -1,7 +1,5 @@
 package com.example.user.contacts;
 
-import android.net.Uri;
-
 import java.io.Serializable;
 
 public class ContactPOJO implements Comparable<Object>,Serializable
@@ -14,7 +12,12 @@ public class ContactPOJO implements Comparable<Object>,Serializable
     private String mPictureUri;
 
 
-    public ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType,String pPictureUri)
+    ContactPOJO()
+    {
+
+    }
+
+    ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType,String pPictureUri)
     {
         mContactName = pName;
         mContactNumber = pNumber;
@@ -23,24 +26,24 @@ public class ContactPOJO implements Comparable<Object>,Serializable
         mPictureUri=pPictureUri;
     }
 
-    public void setNumberType(int pNumberType)
+    void setNumberType(int pNumberType)
     {
         this.mNumberType = pNumberType;
     }
 
-    public void setmContactName(String mContactName) {
+    void setmContactName(String mContactName) {
         this.mContactName = mContactName;
     }
 
-    public void setmContactNumber(String mContactNumber) {
+    void setmContactNumber(String mContactNumber) {
         this.mContactNumber = mContactNumber;
     }
 
-    public void setmEMailId(String mEMailId) {
+    void setmEMailId(String mEMailId) {
         this.mEMailId = mEMailId;
     }
 
-    public void setPictureUri(String pPictureUri)
+    void setPictureUri(String pPictureUri)
     {
         this.mPictureUri = pPictureUri;
     }
@@ -60,18 +63,13 @@ public class ContactPOJO implements Comparable<Object>,Serializable
         return mEMailId;
     }
 
-    public String getPictureUri()
+    String getPictureUri()
     {
         return mPictureUri;
     }
 
-    public int getNumberType() {
+    int getNumberType() {
         return mNumberType;
-    }
-
-    public String toString()
-    {
-        return this.mContactName+"\t"+this.mContactNumber+"\t"+this.getEMailId();
     }
 
     @Override

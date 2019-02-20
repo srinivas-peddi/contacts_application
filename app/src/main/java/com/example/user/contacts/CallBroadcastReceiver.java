@@ -20,11 +20,8 @@ public class CallBroadcastReceiver extends BroadcastReceiver
         else
         {
             String state=intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
-            Log.v("CALL BROADCAST",intent.getAction());
-            Log.v("CALL BROADCAST",state);
             if(intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER))
             {
-                Log.v("CALL BROADCAST NUMBER",intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER));
                 ContactsTable contactsTable=new ContactsTable(context);
                 contactsTable.open();
                 Cursor cursor=contactsTable.checkDBForNumber(intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER));

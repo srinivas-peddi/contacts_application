@@ -24,7 +24,6 @@ public class DisplayContact extends AppCompatActivity
 {
 
     private static final int EDIT_CONTACT = 20;
-    TextView mNameText;
     TextView mNumberText;
     TextView mEmailText;
     ContactPOJO mContactPOJO;
@@ -186,7 +185,7 @@ public class DisplayContact extends AppCompatActivity
         alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which)
             {
-
+                dialog.dismiss();
             }
         });
 
