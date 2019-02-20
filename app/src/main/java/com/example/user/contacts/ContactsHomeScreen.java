@@ -64,9 +64,10 @@ public class ContactsHomeScreen extends AppCompatActivity
         setContentView(R.layout.homescreen);
         mContacts = new ArrayList<>();
         mReadDB = new DBReadAsyncTask();
-        mContactsTable = new ContactsTable(this).open();
+        mContactsTable = new ContactsTable(this);
         mListView= findViewById(R.id.contact_list);
         mProgressBar= findViewById(R.id.progress_circular);
+        mContactsTable.open();
         mReadDB.execute(mContactsTable);
         displayContacts();
     }
@@ -100,11 +101,11 @@ public class ContactsHomeScreen extends AppCompatActivity
         {
             ContactsTable contactsTable=contactsTables[0];
             Cursor cursor= contactsTable.fetch();
-            ContactPOJO contactPOJO= new ContactPOJO();;
             if(cursor.moveToFirst())
             {
                 do
                 {
+                    ContactPOJO contactPOJO= new ContactPOJO();
                     contactPOJO.setmContactName(cursor.getString(0));
                     contactPOJO.setmContactNumber(cursor.getString(1));
                     contactPOJO.setmEMailId(cursor.getString(2));
@@ -198,7 +199,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             case R.id.import_contacts:
                 if(ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.READ_CONTACTS)!=PackageManager.PERMISSION_GRANTED)
                 {
-                    if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_CONTACTS))
+                    if(ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_CONTACTS))
                     {
                         Toast.makeText(this,"Contacts Permission is required to Import Contacts",Toast.LENGTH_SHORT).show();
                         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},PERMISSION_FOR_READ_CONTACTS);
@@ -328,6 +329,8 @@ public class ContactsHomeScreen extends AppCompatActivity
         {
             if(resultCode==RESULT_OK)
             {
+                ContactPOJO contactPOJO= (ContactPOJO) data.getExtras().getSerializable("contactobj");
+                mContactsTable.saveSingleContact(contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType(),contactPOJO.getPictureUri(),contactPOJO.getAddress(),contactPOJO.getWebsite());
                 Toast.makeText(this,"Contact Saved",Toast.LENGTH_SHORT).show();
                 Collections.sort(mContacts);
                 mCustomAdapter.notifyDataSetChanged();
@@ -349,7 +352,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             else if(resultCode==RESULT_FIRST_USER)
             {
                 ContactPOJO contactPOJO=(ContactPOJO) data.getExtras().getSerializable("contactobj");
-                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType(),null);
+                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType(),contactPOJO.getPictureUri(),contactPOJO.getAddress(),contactPOJO.getWebsite());
                 Toast.makeText(this,"Contact Updated",Toast.LENGTH_SHORT).show();
                 mContacts.set(mPosition,contactPOJO);
                 Collections.sort(mContacts);
@@ -406,11 +409,15 @@ class CustomAdapter extends ArrayAdapter<ContactPOJO>
                 contactNumberDisplay.setText(contactPOJO.getContactNumber());
                 callOrEmailButton.setBackgroundResource(R.drawable.ic_call_img);
             }
-            else
+            else if(!contactPOJO.getEMailId().equals(""))
             {
                 contactNumberDisplay.setText(contactPOJO.getEMailId());
                 callOrEmailButton.setBackgroundResource(R.drawable.ic_email_img);
-
+            }
+            else
+            {
+                contactNumberDisplay.setVisibility(View.GONE);
+                callOrEmailButton.setVisibility(View.GONE);
             }
         }
         callOrEmailButton.setOnClickListener(new View.OnClickListener()

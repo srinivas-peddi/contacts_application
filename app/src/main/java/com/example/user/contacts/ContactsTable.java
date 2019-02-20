@@ -9,61 +9,72 @@ import java.util.ArrayList;
 
 public class ContactsTable
 {
-    private DatabaseHelper mDatabaseHelper;
     private Context mContext;
     private SQLiteDatabase mContactDB;
+    private DatabaseHelper mDatabaseHelper;
+
 
     public ContactsTable(Context c)
     {
         mContext = c;
     }
 
-    public ContactsTable open()
+    ContactsTable open()
     {
         mDatabaseHelper = new DatabaseHelper(mContext);
         mContactDB = mDatabaseHelper.getWritableDatabase();
         return this;
     }
 
-    public void close()
+    void close()
     {
         mDatabaseHelper.close();
     }
 
-    public void saveSingleContact(String pName,String pNumber, String pEmail, int pNumberType, String pPicUri)
+    public void saveSingleContact(String pName,String pNumber, String pEmail, int pNumberType, String pPicUri, String pAddress, String pWebsite)
     {
-        ContentValues addNewContact=new ContentValues();
-        addNewContact.put(DatabaseHelper.NAME,pName);
-        addNewContact.put(DatabaseHelper.NUMBER,pNumber);
-        addNewContact.put(DatabaseHelper.EMAIL,pEmail);
-        addNewContact.put(DatabaseHelper.NUMBER_TYPE,pNumberType);
-        addNewContact.put(DatabaseHelper.PIC_URI,pPicUri);
-        mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
-    }
-    {
-
+            ContentValues addNewContact=new ContentValues();
+            addNewContact.put(DatabaseHelper.NAME,pName);
+            addNewContact.put(DatabaseHelper.NUMBER,pNumber);
+            addNewContact.put(DatabaseHelper.EMAIL,pEmail);
+            addNewContact.put(DatabaseHelper.NUMBER_TYPE,pNumberType);
+            addNewContact.put(DatabaseHelper.PIC_URI,pPicUri);
+            addNewContact.put(DatabaseHelper.ADDRESS,pAddress);
+            addNewContact.put(DatabaseHelper.WEBSITE,pWebsite);
+            mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
     }
 
     public void save(ArrayList<ContactPOJO> pContacts)
     {
-        ContentValues addNewContact=new ContentValues();
-        for(ContactPOJO i:pContacts)
-        {
-            addNewContact.put(DatabaseHelper.NAME,i.getContactName());
-            addNewContact.put(DatabaseHelper.NUMBER,i.getContactNumber());
-            addNewContact.put(DatabaseHelper.EMAIL,i.getEMailId());
-            addNewContact.put(DatabaseHelper.NUMBER_TYPE,i.getNumberType());
-            addNewContact.put(DatabaseHelper.PIC_URI,i.getPictureUri());
-            mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
-            addNewContact.clear();
-        }
 
+        try
+        {
+            mContactDB.beginTransaction();
+            ContentValues addNewContact=new ContentValues();
+            for(ContactPOJO i:pContacts)
+            {
+                addNewContact.put(DatabaseHelper.NAME,i.getContactName());
+                addNewContact.put(DatabaseHelper.NUMBER,i.getContactNumber());
+                addNewContact.put(DatabaseHelper.EMAIL,i.getEMailId());
+                addNewContact.put(DatabaseHelper.NUMBER_TYPE,i.getNumberType());
+                addNewContact.put(DatabaseHelper.PIC_URI,i.getPictureUri());
+                addNewContact.put(DatabaseHelper.ADDRESS,i.getAddress());
+                addNewContact.put(DatabaseHelper.WEBSITE,i.getWebsite());
+                mContactDB.insert(DatabaseHelper.TABLE_NAME, null, addNewContact);
+                addNewContact.clear();
+            }
+            mContactDB.setTransactionSuccessful();
+        }
+        finally
+        {
+            mContactDB.endTransaction();
+        }
     }
 
     public Cursor fetch()
     {
         String[] columns = new String[] { DatabaseHelper.NAME, DatabaseHelper.NUMBER, DatabaseHelper.EMAIL, DatabaseHelper.NUMBER_TYPE, DatabaseHelper.PIC_URI};
-        Cursor cursor = mContactDB.query(DatabaseHelper.TABLE_NAME, columns, null, null, null, null, DatabaseHelper.NAME+" ASC");
+        Cursor cursor = mContactDB.query(DatabaseHelper.TABLE_NAME, columns, null, null, null, null, null);
         return cursor;
     }
 
@@ -72,10 +83,10 @@ public class ContactsTable
         return mContactDB.query(DatabaseHelper.TABLE_NAME,new String[]{DatabaseHelper.NUMBER},DatabaseHelper.NUMBER+"=?",new String[]{pNumber},null,null,null);
     }
 
-    public void update(String pOldName,String pNewName, String pNumber, String pEmail, int pNumberType, String pPicUri)
+    public void update(String pOldName,String pNewName, String pNumber, String pEmail, int pNumberType, String pPicUri,String pAddress, String pWebsite)
     {
         delete(pOldName);
-        saveSingleContact(pNewName,pNumber,pEmail,pNumberType,pPicUri);
+        saveSingleContact(pNewName,pNumber,pEmail,pNumberType,pPicUri,pAddress,pWebsite);
     }
 
     public void delete(String pName)

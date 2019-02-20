@@ -58,7 +58,6 @@
                 android:id="@+id/number_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:onClick="dialNumber">
 
                 <ImageView
@@ -96,8 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:id="@+id/email_layout"
-                android:onClick="sendMail"
-                android:layout_below="@id/number_layout">
+                android:onClick="sendMail">
 
                 <ImageView
                     android:layout_width="35dp"
@@ -118,6 +116,62 @@
                     android:textSize="20sp" />
 
             </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:id="@+id/address_layout"
+                android:onClick="openLocation">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:src="@drawable/ic_address_img" />
+
+
+                <TextView
+                    android:id="@+id/address_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:id="@+id/website_layout"
+                android:onClick="openBrowser">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="16dp"
+                    android:src="@drawable/ic_website_img" />
+
+
+                <TextView
+                    android:id="@+id/website_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 

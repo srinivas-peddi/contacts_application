@@ -10,20 +10,24 @@ public class ContactPOJO implements Comparable<Object>,Serializable
     private String mEMailId;
     private int mNumberType;
     private String mPictureUri;
+    private String mAddress;
+    private String mWebsite;
 
 
-    ContactPOJO()
+    public ContactPOJO()
     {
-
+        super();
     }
 
-    ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType,String pPictureUri)
+    ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType,String pPictureUri,String pAddress, String pWebsite)
     {
-        mContactName = pName;
-        mContactNumber = pNumber;
-        mEMailId = pEMailId;
-        mNumberType=pNumberType;
-        mPictureUri=pPictureUri;
+        this.mContactName = pName;
+        this.mContactNumber = pNumber;
+        this.mEMailId = pEMailId;
+        this.mNumberType=pNumberType;
+        this.mPictureUri=pPictureUri;
+        this.mAddress=pAddress;
+        this.mWebsite=pWebsite;
     }
 
     void setNumberType(int pNumberType)
@@ -48,6 +52,16 @@ public class ContactPOJO implements Comparable<Object>,Serializable
         this.mPictureUri = pPictureUri;
     }
 
+    void setAddress(String pAddress)
+    {
+        this.mAddress=pAddress;
+    }
+
+    void setWebsite(String pWebsite)
+    {
+        this.mWebsite=pWebsite;
+    }
+
     String getContactName()
     {
         return this.mContactName;
@@ -70,6 +84,16 @@ public class ContactPOJO implements Comparable<Object>,Serializable
 
     int getNumberType() {
         return mNumberType;
+    }
+
+    public String getAddress()
+    {
+        return mAddress;
+    }
+
+    public String getWebsite()
+    {
+        return mWebsite;
     }
 
     @Override

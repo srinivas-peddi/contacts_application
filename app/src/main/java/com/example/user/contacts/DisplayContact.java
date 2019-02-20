@@ -26,9 +26,12 @@ public class DisplayContact extends AppCompatActivity
     private static final int EDIT_CONTACT = 20;
     TextView mNumberText;
     TextView mEmailText;
+    TextView mNumberTypeText;
+    TextView mAddressText;
+    TextView mWebsiteText;
+
     ContactPOJO mContactPOJO;
     Toolbar mToolbar;
-    TextView mNumberTypeText;
     ImageView mContactImage;
     Menu menu;
     @Override
@@ -48,6 +51,9 @@ public class DisplayContact extends AppCompatActivity
         mNumberText =findViewById(R.id.number_display__text);
         mEmailText =findViewById(R.id.email_display_text);
         mNumberTypeText = findViewById(R.id.number_type_display);
+        mAddressText = findViewById(R.id.address_display);
+        mWebsiteText = findViewById(R.id.website_display);
+
         mContactImage= findViewById(R.id.expandedImage);
         if(!mContactPOJO.getContactNumber().equals(""))
         {
@@ -86,8 +92,7 @@ public class DisplayContact extends AppCompatActivity
         }
         else
         {
-            LinearLayout linearLayout= findViewById(R.id.number_layout);
-            linearLayout.setVisibility(View.GONE);
+            findViewById(R.id.number_layout).setVisibility(View.GONE);
         }
         if(!mContactPOJO.getEMailId().equals(""))
         {
@@ -95,8 +100,7 @@ public class DisplayContact extends AppCompatActivity
         }
         else
         {
-            LinearLayout linearLayout= findViewById(R.id.email_layout);
-            linearLayout.setVisibility(View.GONE);
+            findViewById(R.id.email_layout).setVisibility(View.GONE);
         }
         if(!mContactPOJO.getPictureUri().equals(""))
         {
@@ -107,6 +111,22 @@ public class DisplayContact extends AppCompatActivity
         else
         {
             mContactImage.setImageResource(R.drawable.user);
+        }
+        if(!mContactPOJO.getAddress().equals(""))
+        {
+            mAddressText.setText(mContactPOJO.getAddress());
+        }
+        else
+        {
+            findViewById(R.id.address_layout).setVisibility(View.GONE);
+        }
+        if(!mContactPOJO.getWebsite().equals(""))
+        {
+            mWebsiteText.setText(mContactPOJO.getWebsite());
+        }
+        else
+        {
+            findViewById(R.id.website_layout).setVisibility(View.GONE);
         }
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
@@ -168,6 +188,32 @@ public class DisplayContact extends AppCompatActivity
         }
     }
 
+    public void openLocation(View view)
+    {
+        Intent mapIntent= new Intent(Intent.ACTION_VIEW);
+        mapIntent.setData(Uri.parse("geo:0,0?q="+mContactPOJO.getAddress()));
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
+
+    public void openBrowser(View view)
+    {
+        String webAddress= mContactPOJO.getWebsite();
+        if(!webAddress.startsWith("http://") && webAddress.startsWith("https://"))
+        {
+            webAddress="http://"+webAddress;
+        }
+        Intent openUrlIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(webAddress));
+        if(openUrlIntent.resolveActivity(getPackageManager())!=null)
+        {
+            startActivity(openUrlIntent);
+        }
+        else
+        {
+            Toast.makeText(this,"No App found to Open Link",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void deleteContact()
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -212,4 +258,6 @@ public class DisplayContact extends AppCompatActivity
             Toast.makeText(this,"Changes Discarded",Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }

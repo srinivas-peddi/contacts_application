@@ -23,7 +23,6 @@ public class CallBroadcastReceiver extends BroadcastReceiver
             if(intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER))
             {
                 ContactsTable contactsTable=new ContactsTable(context);
-                contactsTable.open();
                 Cursor cursor=contactsTable.checkDBForNumber(intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER));
                 if(state.equals("IDLE"))
                 {
@@ -35,7 +34,6 @@ public class CallBroadcastReceiver extends BroadcastReceiver
                         context.startActivity(intent1);
                     }
                 }
-                contactsTable.close();
             }
         }
     }

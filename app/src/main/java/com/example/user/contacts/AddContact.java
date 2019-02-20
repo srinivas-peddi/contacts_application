@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,18 +25,25 @@ public class AddContact extends AppCompatActivity
     EditText mNameText;
     EditText mNumberText;
     EditText mEmailText;
+    TextView mAddressText;
+    TextView mWebsiteText;
+
     ContactPOJO mContactPOJO;
-    ContactsTable mContactsTable;
     Spinner mNumberTypeSpinner;
     int mNumberType;
+    String mPicUri;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
+
         mNameText = findViewById(R.id.name_text);
         mNumberText = findViewById(R.id.number_text);
         mEmailText = findViewById(R.id.email_text);
+        mAddressText = findViewById(R.id.address_text);
+        mWebsiteText = findViewById(R.id.website_text);
+
         mEmailText.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
@@ -71,6 +79,7 @@ public class AddContact extends AppCompatActivity
             mNameText.setText(mContactPOJO.getContactName());
             mNumberText.setText(mContactPOJO.getContactNumber());
             mEmailText.setText(mContactPOJO.getEMailId());
+            mPicUri= mContactPOJO.getPictureUri();
             if(mContactPOJO.getNumberType()<8)
             {
                 mNumberTypeSpinner.setSelection(mContactPOJO.getNumberType()-1);
@@ -79,11 +88,11 @@ public class AddContact extends AppCompatActivity
             {
                 mNumberTypeSpinner.setSelection(6);
             }
+            mAddressText.setText(mContactPOJO.getAddress());
+            mWebsiteText.setText(mContactPOJO.getWebsite());
         }
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        mContactsTable = new ContactsTable(this);
-        mContactsTable.open();
     }
 
 
@@ -106,7 +115,7 @@ public class AddContact extends AppCompatActivity
                     {
                         if(mContactPOJO ==null)
                         {
-                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim(),mNumberType,null);
+                            mContactPOJO =new ContactPOJO(mNameText.getText().toString().trim(), mNumberText.getText().toString().trim(), mEmailText.getText().toString().trim(),mNumberType,"",mAddressText.getText().toString().trim(),mWebsiteText.getText().toString().trim());
                             if(ContactsHomeScreen.mContacts.contains(mContactPOJO))
                             {
                                 Toast.makeText(this,"Contact Already Exists.\nPlease Change the Name",Toast.LENGTH_SHORT).show();
@@ -115,8 +124,7 @@ public class AddContact extends AppCompatActivity
                             else
                             {
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
-                                mContactsTable.saveSingleContact(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),null);
-                                setResult(RESULT_OK,new Intent());
+                                setResult(RESULT_OK,new Intent().putExtra("contactobj",mContactPOJO));
                                 finish();
                             }
                         }
@@ -131,9 +139,11 @@ public class AddContact extends AppCompatActivity
                                 mContactPOJO.setmContactNumber(mNumberText.getText().toString().trim());
                                 mContactPOJO.setmEMailId(mEmailText.getText().toString().trim());
                                 mContactPOJO.setNumberType(mNumberType);
-                                mContactsTable.saveSingleContact(mContactPOJO.getContactName(),mContactPOJO.getContactNumber(),mContactPOJO.getEMailId(),mContactPOJO.getNumberType(),mContactPOJO.getPictureUri().toString());
+                                mContactPOJO.setAddress(mAddressText.getText().toString().trim());
+                                mContactPOJO.setWebsite(mWebsiteText.getText().toString().trim());
+
                                 ContactsHomeScreen.mContacts.add(mContactPOJO);
-                                setResult(RESULT_FIRST_USER,new Intent());
+                                setResult(RESULT_FIRST_USER,new Intent().putExtra("oldName",oldName).putExtra("contactobj",mContactPOJO));
                                 finish();
                             }
                             else
@@ -142,7 +152,11 @@ public class AddContact extends AppCompatActivity
                                 {
                                     mContactPOJO.setmContactName(mNameText.getText().toString().trim());
                                     mContactPOJO.setmContactNumber(mNumberText.getText().toString().trim());
+                                    mContactPOJO.setNumberType(mNumberType);
                                     mContactPOJO.setmEMailId(mEmailText.getText().toString().trim());
+                                    mContactPOJO.setAddress(mAddressText.getText().toString().trim());
+                                    mContactPOJO.setWebsite(mWebsiteText.getText().toString().trim());
+
                                     setResult(RESULT_FIRST_USER,new Intent().putExtra("oldName",oldName).putExtra("contactobj", mContactPOJO));
                                     finish();
                                 }
@@ -206,10 +220,19 @@ public class AddContact extends AppCompatActivity
         alertDialog.show();
     }
 
+    public void displayDetails(View view)
+    {
+        RelativeLayout displayMoreFields= findViewById(R.id.address_website_layout);
+        TextView displayMoreText = findViewById(R.id.display_more_fields_text);
+        displayMoreText.setVisibility(View.GONE);
+        displayMoreFields.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        mContactsTable.close();
     }
+
+
 }

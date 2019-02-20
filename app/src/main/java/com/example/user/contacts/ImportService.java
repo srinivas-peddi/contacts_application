@@ -68,16 +68,16 @@ public class ImportService extends IntentService
                 if(!mIsCancelled)
                 {
                     int id=cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),"","",0,"");
+                    ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),"","",0,"","","");
                     if(!mTempContacts.contains(contactPOJO) && !ContactsHomeScreen.mContacts.contains(contactPOJO))
                     {
-                        Cursor detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",new String[]{""+id}, null);
+                        Cursor detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER,ContactsContract.CommonDataKinds.Phone.TYPE},ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",new String[]{""+id}, null);
                         if(detailCursor!=null && detailCursor.moveToFirst())
                         {
                             contactPOJO.setmContactNumber(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                             contactPOJO.setNumberType(detailCursor.getInt(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
                         }
-                        detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",new String[]{""+id},null);
+                        detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.Email.DATA},ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",new String[]{""+id},null);
                         if(detailCursor!=null && detailCursor.moveToFirst())
                         {
                             contactPOJO.setmEMailId(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)));
@@ -87,7 +87,16 @@ public class ImportService extends IntentService
                         {
                             contactPOJO.setPictureUri(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)));
                         }
-
+                        detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS},ContactsContract.CommonDataKinds.StructuredPostal.CONTACT_ID +"= ?",new String[]{""+id},null);
+                        if(detailCursor!=null && detailCursor.moveToFirst())
+                        {
+                            contactPOJO.setAddress(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS)));
+                        }
+                        detailCursor= contentResolver.query(ContactsContract.Data.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.Website.URL},ContactsContract.Data.CONTACT_ID + "="+ id+" AND " + ContactsContract.Data.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE + "'",null,null,null);
+                        if(detailCursor!=null && detailCursor.moveToFirst())
+                        {
+                            contactPOJO.setWebsite(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)));
+                        }
                         mTempContacts.add(contactPOJO);
                         detailCursor.close();
                     }
