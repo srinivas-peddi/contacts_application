@@ -53,69 +53,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <LinearLayout
-                android:id="@+id/number_layout"
-                android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/contact_detail_layout">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="dialNumber">
+                android:id="@+id/number_recycler_view"/>
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    android:src="@drawable/ic_call_img" />
-
-                <TextView
-                    android:id="@+id/number_display__text"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="16dp"
-                    android:singleLine="true"
-                    android:textColor="#000000"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/number_type_display"
-                    android:textSize="20sp"
-                    android:paddingLeft="5dp"
-                    android:gravity="center_vertical"
-                    android:textColor="#000000" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:id="@+id/email_layout"
-                android:onClick="sendMail">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    android:src="@drawable/ic_email_img" />
-
-
-                <TextView
-                    android:id="@+id/email_display_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="16dp"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
+                android:id="@+id/email_recycler_view"/>
 
 
             <LinearLayout
@@ -149,6 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
                 android:id="@+id/website_layout"
                 android:onClick="openBrowser">
 

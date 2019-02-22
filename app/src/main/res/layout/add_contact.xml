@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
 
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/contact_details_layout">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,71 +36,70 @@
 
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:layout_marginTop="50dp"
         android:layout_below="@id/name_edit_add"
         android:text="Number:"
         android:textColor="#909090"
-        android:id="@+id/number_edit_add"/>
+        android:id="@+id/number_text"/>
 
+    <Button
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_below="@+id/name_text"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:onClick="addNumberField"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/ic_add_detail_img" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/number_edit_add"
-        android:orientation="horizontal">
-        <EditText
-            android:layout_width="0dp"
-            android:layout_weight="5"
-            android:layout_height="wrap_content"
-            android:id="@+id/number_text"
-            android:inputType="phone"
-            android:paddingLeft="5dp"
-            android:singleLine="true"
-            android:paddingTop="5dp"
-            android:gravity="center_vertical"
-            android:textSize="18sp"
-            android:background="@drawable/edit_text_design"
-            android:scrollHorizontally="true"/>
+        android:id="@+id/number_layout"
+        android:orientation="vertical"
+        android:layout_below="@id/number_text">
 
-        <Spinner
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:layout_height="match_parent"
-            android:id="@+id/number_type" />
     </LinearLayout>
+
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:layout_marginTop="50dp"
         android:textColor="#909090"
-        android:layout_below="@id/number_edit_add"
         android:text="EmailID:"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/number_layout"
         android:id="@+id/email_text_add"/>
 
-    <EditText
+    <Button
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_below="@+id/number_layout"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:onClick="addEmailField"
+        android:background="@drawable/ic_add_detail_img" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/email_text"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
         android:layout_below="@id/email_text_add"
-        android:paddingLeft="5dp"
-        android:gravity="center_vertical"
-        android:paddingTop="5dp"
-        android:background="@drawable/edit_text_design"
-        android:singleLine="true"
-        android:textSize="18sp"
-        android:scrollHorizontally="true"
-        android:imeOptions="actionDone"/>
+        android:id="@+id/email_add_layout">
 
+
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Or Change More Fields"
-        android:layout_below="@id/email_text"
+        android:layout_below="@id/email_add_layout"
         android:layout_marginTop="20dp"
         android:id="@+id/display_more_fields_text"
         android:focusable="true"
@@ -107,18 +110,19 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/email_text_add"
+        android:layout_below="@id/email_add_layout"
         android:id="@+id/address_website_layout"
         android:visibility="invisible">
 
         <TextView
+            android:id="@+id/address_text_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="50dp"
-            android:textColor="#909090"
             android:text="Address:"
-            android:id="@+id/address_text_add"/>
+            android:textColor="#909090"
+            android:textSize="20sp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -165,6 +169,7 @@
         android:id="@+id/save_button"
         android:layout_width="165dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/address_website_layout"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="16dp"
@@ -177,6 +182,7 @@
     <Button
         android:id="@+id/discard_button"
         android:layout_width="185dp"
+        android:layout_below="@id/address_website_layout"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="5dp"
@@ -189,4 +195,6 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

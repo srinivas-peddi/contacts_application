@@ -68,19 +68,32 @@ public class ImportService extends IntentService
                 if(!mIsCancelled)
                 {
                     int id=cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),"","",0,"","","");
+                    ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
                     if(!mTempContacts.contains(contactPOJO) && !ContactsHomeScreen.mContacts.contains(contactPOJO))
                     {
                         Cursor detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER,ContactsContract.CommonDataKinds.Phone.TYPE},ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",new String[]{""+id}, null);
                         if(detailCursor!=null && detailCursor.moveToFirst())
                         {
-                            contactPOJO.setmContactNumber(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                            contactPOJO.setNumberType(detailCursor.getInt(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
+                            ArrayList<String> contactNumbers= new ArrayList<>();
+                            ArrayList<Integer> numberType= new ArrayList<>();
+
+                            do
+                            {
+                                contactNumbers.add(detailCursor.getString(0));
+                                numberType.add(detailCursor.getInt(1));
+                            }while(detailCursor.moveToNext());
+                            contactPOJO.setContactNumber(contactNumbers);
+                            contactPOJO.setNumberType(numberType);
                         }
                         detailCursor = contentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,new String[]{ContactsContract.CommonDataKinds.Email.DATA},ContactsContract.CommonDataKinds.Email.CONTACT_ID + "= ?",new String[]{""+id},null);
                         if(detailCursor!=null && detailCursor.moveToFirst())
                         {
-                            contactPOJO.setmEMailId(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA)));
+                            ArrayList<String> emailIDs=new ArrayList<>();
+                            do
+                            {
+                                emailIDs.add(detailCursor.getString(0));
+                            }while (detailCursor.moveToNext());
+                            contactPOJO.setEMailId(emailIDs);
                         }
 
                         if(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI))!=null)
@@ -98,7 +111,7 @@ public class ImportService extends IntentService
                             contactPOJO.setWebsite(detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL))!=null?detailCursor.getString(detailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)):"");
                         }
                         mTempContacts.add(contactPOJO);
-                        if(!detailCursor.isClosed())
+                        if (detailCursor != null && !detailCursor.isClosed())
                         {
                             detailCursor.close();
                         }

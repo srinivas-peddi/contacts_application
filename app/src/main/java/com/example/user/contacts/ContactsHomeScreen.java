@@ -105,12 +105,34 @@ public class ContactsHomeScreen extends AppCompatActivity
             {
                 do
                 {
-                    ContactPOJO contactPOJO= new ContactPOJO();
-                    contactPOJO.setmContactName(cursor.getString(0));
-                    contactPOJO.setmContactNumber(cursor.getString(1));
-                    contactPOJO.setmEMailId(cursor.getString(2));
-                    contactPOJO.setNumberType(cursor.getInt(3));
-                    contactPOJO.setPictureUri(cursor.getString(4));
+                    ContactPOJO contactPOJO= new ContactPOJO(cursor.getString(1));
+                    contactPOJO.setId(cursor.getInt(0));
+                    contactPOJO.setPictureUri(cursor.getString(2));
+                    contactPOJO.setAddress(cursor.getString(3));
+                    contactPOJO.setWebsite(cursor.getString(4));
+                    Cursor detailCursor=contactsTable.fetchNumbers(cursor.getString(1));
+                    if(detailCursor!=null && detailCursor.moveToFirst())
+                    {
+                        ArrayList<String> numbers=new ArrayList<>();
+                        ArrayList<Integer> numberType=new ArrayList<>();
+                        do
+                        {
+                            numbers.add(detailCursor.getString(0));
+                            numberType.add(detailCursor.getInt(1));
+                        }while(detailCursor.moveToNext());
+                        contactPOJO.setContactNumber(numbers);
+                        contactPOJO.setNumberType(numberType);
+                    }
+                    detailCursor=contactsTable.fetchEmailIDs(cursor.getString(1));
+                    if(detailCursor!=null && detailCursor.moveToFirst())
+                    {
+                        ArrayList<String> emailIDs=new ArrayList<>();
+                        do
+                        {
+                            emailIDs.add(detailCursor.getString(0));
+                        }while(detailCursor.moveToNext());
+                        contactPOJO.setEMailId(emailIDs);
+                    }
                     mContacts.add(contactPOJO);
                 }while(cursor.moveToNext());
                 Collections.sort(mContacts);
@@ -199,6 +221,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             case R.id.import_contacts:
                 if(ContextCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.READ_CONTACTS)!=PackageManager.PERMISSION_GRANTED)
                 {
+                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},PERMISSION_FOR_READ_CONTACTS);
                     if(!ActivityCompat.shouldShowRequestPermissionRationale(this,android.Manifest.permission.READ_CONTACTS))
                     {
                         Toast.makeText(this,"Contacts Permission is required to Import Contacts",Toast.LENGTH_SHORT).show();
@@ -352,7 +375,7 @@ public class ContactsHomeScreen extends AppCompatActivity
             else if(resultCode==RESULT_FIRST_USER)
             {
                 ContactPOJO contactPOJO=(ContactPOJO) data.getExtras().getSerializable("contactobj");
-                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType(),contactPOJO.getPictureUri(),contactPOJO.getAddress(),contactPOJO.getWebsite());
+//                mContactsTable.update(data.getExtras().getString("oldName"),contactPOJO.getContactName(),contactPOJO.getContactNumber(),contactPOJO.getEMailId(),contactPOJO.getNumberType(),contactPOJO.getPictureUri(),contactPOJO.getAddress(),contactPOJO.getWebsite());
                 Toast.makeText(this,"Contact Updated",Toast.LENGTH_SHORT).show();
                 mContacts.set(mPosition,contactPOJO);
                 Collections.sort(mContacts);
@@ -403,20 +426,21 @@ class CustomAdapter extends ArrayAdapter<ContactPOJO>
         if (contactPOJO != null) {
             contactNameDisplay.setText(contactPOJO.getContactName());
         }
-        if (contactPOJO != null) {
-            if(!contactPOJO.getContactNumber().equals(""))
+        if (contactPOJO != null)
+        {
+            if(contactPOJO.getContactNumber()!=null && contactPOJO.getContactNumber().size()!=0)
             {
-                contactNumberDisplay.setText(contactPOJO.getContactNumber());
+                contactNumberDisplay.setText(contactPOJO.getContactNumber().get(0));
                 callOrEmailButton.setBackgroundResource(R.drawable.ic_call_img);
             }
-            else if(!contactPOJO.getEMailId().equals(""))
+            else if(contactPOJO.getEMailId()!=null && contactPOJO.getEMailId().size()!=0)
             {
-                contactNumberDisplay.setText(contactPOJO.getEMailId());
+                contactNumberDisplay.setText(contactPOJO.getEMailId().get(0));
                 callOrEmailButton.setBackgroundResource(R.drawable.ic_email_img);
             }
             else
             {
-                contactNumberDisplay.setVisibility(View.GONE);
+                contactNumberDisplay.setVisibility(View.INVISIBLE);
                 callOrEmailButton.setVisibility(View.GONE);
             }
         }

@@ -23,10 +23,10 @@ public class CallBroadcastReceiver extends BroadcastReceiver
             if(intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER))
             {
                 ContactsTable contactsTable=new ContactsTable(context);
-                Cursor cursor=contactsTable.checkDBForNumber(intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER));
+                contactsTable.open();
                 if(state.equals("IDLE"))
                 {
-                    if(cursor.getCount()==0)
+                    if(contactsTable.checkDBForNumber(intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER)));
                     {
                         Intent intent1= new Intent(context,SaveDialog.class);
                         intent1.putExtra("contactNumber",intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER));

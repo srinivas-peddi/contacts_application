@@ -1,78 +1,87 @@
 package com.example.user.contacts;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ContactPOJO implements Comparable<Object>,Serializable
 {
 
+    private int mId;
     private String mContactName;
-    private String mContactNumber;
-    private String mEMailId;
-    private int mNumberType;
+    private ArrayList<String> mContactNumber;
+    private ArrayList<String> mEMailId;
+    private ArrayList<Integer> mNumberType;
     private String mPictureUri;
     private String mAddress;
     private String mWebsite;
 
-
-    public ContactPOJO()
+    ContactPOJO(String pName)
     {
-        super();
+        this.mContactName=pName;
     }
 
-    ContactPOJO(String pName, String pNumber, String pEMailId,int pNumberType,String pPictureUri,String pAddress, String pWebsite)
+    void setId(int pId)
     {
-        this.mContactName = pName;
-        this.mContactNumber = pNumber;
-        this.mEMailId = pEMailId;
-        this.mNumberType=pNumberType;
-        this.mPictureUri=pPictureUri;
-        this.mAddress=pAddress;
-        this.mWebsite=pWebsite;
+        mId=pId;
     }
 
-    void setNumberType(int pNumberType)
+    void setContactName(String pContactName)
     {
-        this.mNumberType = pNumberType;
+        mContactName = pContactName;
     }
 
-    void setmContactName(String mContactName) {
-        this.mContactName = mContactName;
+    void setContactNumber(ArrayList<String> pContactNumber)
+    {
+        if(pContactNumber!=null)
+        {
+            mContactNumber=pContactNumber;
+        }
     }
 
-    void setmContactNumber(String mContactNumber) {
-        this.mContactNumber = mContactNumber;
+    void setEMailId(ArrayList<String> pEMailId)
+    {
+        if(pEMailId!=null)
+        {
+            mEMailId=pEMailId;
+        }
     }
 
-    void setmEMailId(String mEMailId) {
-        this.mEMailId = mEMailId;
+    void setNumberType(ArrayList<Integer> pNumberType)
+    {
+        if(pNumberType!=null)
+        {
+            mNumberType=pNumberType;
+        }
     }
 
     void setPictureUri(String pPictureUri)
     {
-        this.mPictureUri = pPictureUri;
+        mPictureUri = pPictureUri;
     }
 
     void setAddress(String pAddress)
     {
-        this.mAddress=pAddress;
+        mAddress=pAddress;
     }
 
     void setWebsite(String pWebsite)
     {
-        this.mWebsite=pWebsite;
+        mWebsite=pWebsite;
     }
 
     String getContactName()
     {
-        return this.mContactName;
+        return mContactName;
     }
 
-    String getContactNumber()
+    ArrayList<String> getContactNumber()
     {
         return mContactNumber;
     }
 
-    String getEMailId()
+    ArrayList<String> getEMailId()
     {
         return mEMailId;
     }
@@ -82,16 +91,17 @@ public class ContactPOJO implements Comparable<Object>,Serializable
         return mPictureUri;
     }
 
-    int getNumberType() {
+    ArrayList<Integer> getNumberType()
+    {
         return mNumberType;
     }
 
-    public String getAddress()
+    String getAddress()
     {
         return mAddress;
     }
 
-    public String getWebsite()
+    String getWebsite()
     {
         return mWebsite;
     }

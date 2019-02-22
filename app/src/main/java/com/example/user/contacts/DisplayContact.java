@@ -5,31 +5,36 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DisplayContact extends AppCompatActivity
+import java.util.ArrayList;
+
+public class DisplayContact extends AppCompatActivity implements EmailAdapter.EmailClickListener,NumberAdapter.NumberClickListener
 {
 
     private static final int EDIT_CONTACT = 20;
-    TextView mNumberText;
-    TextView mEmailText;
-    TextView mNumberTypeText;
     TextView mAddressText;
     TextView mWebsiteText;
-
+    NumberAdapter mNumberAdapter;
+    EmailAdapter mEmailAdapter;
     ContactPOJO mContactPOJO;
     Toolbar mToolbar;
     ImageView mContactImage;
@@ -48,61 +53,21 @@ public class DisplayContact extends AppCompatActivity
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         mToolbar.setTitle(mContactPOJO.getContactName());
         mToolbar.setTitleTextColor(Color.WHITE);
-        mNumberText =findViewById(R.id.number_display__text);
-        mEmailText =findViewById(R.id.email_display_text);
-        mNumberTypeText = findViewById(R.id.number_type_display);
         mAddressText = findViewById(R.id.address_display);
         mWebsiteText = findViewById(R.id.website_display);
-
         mContactImage= findViewById(R.id.expandedImage);
-        if(!mContactPOJO.getContactNumber().equals(""))
-        {
-            mNumberText.setText(mContactPOJO.getContactNumber());
-            switch (mContactPOJO.getNumberType())
-            {
-                case 1:
-                    mNumberTypeText.setText("Home");
-                    break;
+        RecyclerView numberRecycler = findViewById(R.id.number_recycler_view);
+        numberRecycler.setHasFixedSize(true);
+        numberRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mNumberAdapter = new NumberAdapter(mContactPOJO.getContactNumber(),mContactPOJO.getNumberType());
+        numberRecycler.setAdapter(mNumberAdapter);
+        RecyclerView emailRecycler = findViewById(R.id.email_recycler_view);
+        emailRecycler.setHasFixedSize(true);
+        emailRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mEmailAdapter = new EmailAdapter(mContactPOJO.getEMailId());
+        emailRecycler.setAdapter(mEmailAdapter);
 
-                case 2:
-                    mNumberTypeText.setText("Mobile");
-                    break;
-
-                case 3:
-                    mNumberTypeText.setText("Work");
-                    break;
-
-                case 4:
-                    mNumberTypeText.setText("Work Fax");
-                    break;
-
-                case 5:
-                    mNumberTypeText.setText("Home Fax");
-                    break;
-
-                case 6:
-                    mNumberTypeText.setText("Pager");
-                    break;
-
-                default:
-                    mNumberTypeText.setText("Other");
-                    break;
-
-            }
-        }
-        else
-        {
-            findViewById(R.id.number_layout).setVisibility(View.GONE);
-        }
-        if(!mContactPOJO.getEMailId().equals(""))
-        {
-            mEmailText.setText(mContactPOJO.getEMailId());
-        }
-        else
-        {
-            findViewById(R.id.email_layout).setVisibility(View.GONE);
-        }
-        if(!mContactPOJO.getPictureUri().equals(""))
+        if(mContactPOJO.getPictureUri()!=null && !mContactPOJO.getPictureUri().equals(""))
         {
             mContactImage.setImageURI(null);
             mContactImage.setImageURI(Uri.parse(mContactPOJO.getPictureUri()));
@@ -112,7 +77,8 @@ public class DisplayContact extends AppCompatActivity
         {
             mContactImage.setImageResource(R.drawable.user);
         }
-        if(!mContactPOJO.getAddress().equals(""))
+
+        if(mContactPOJO.getAddress()!=null && !mContactPOJO.getAddress().equals(""))
         {
             mAddressText.setText(mContactPOJO.getAddress());
         }
@@ -120,7 +86,8 @@ public class DisplayContact extends AppCompatActivity
         {
             findViewById(R.id.address_layout).setVisibility(View.GONE);
         }
-        if(!mContactPOJO.getWebsite().equals(""))
+
+        if(mContactPOJO.getWebsite()!=null && !mContactPOJO.getWebsite().equals(""))
         {
             mWebsiteText.setText(mContactPOJO.getWebsite());
         }
@@ -160,10 +127,10 @@ public class DisplayContact extends AppCompatActivity
         return true;
     }
 
-    public void dialNumber(View view)
+    public void dialNumber(String pContactNumber)
     {
         Intent intent=new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:"+ mContactPOJO.getContactNumber()));
+        intent.setData(Uri.parse("tel:"+ pContactNumber));
         if(intent.resolveActivity(getPackageManager())!=null)
         {
             startActivity(new Intent(intent));
@@ -174,7 +141,7 @@ public class DisplayContact extends AppCompatActivity
         }
     }
 
-    public void sendMail(View view)
+    public void sendMail(String pEmail)
     {
         Intent intent=new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:"+ mContactPOJO.getEMailId()));
@@ -258,6 +225,163 @@ public class DisplayContact extends AppCompatActivity
             Toast.makeText(this,"Changes Discarded",Toast.LENGTH_SHORT).show();
         }
     }
+}
+class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberViewHolder>
+{
+    ArrayList<String> mNumber;
+    ArrayList<Integer> mNumberType;
+    NumberClickListener mListener;
+
+    NumberAdapter(ArrayList<String> pNumber, ArrayList<Integer> pNumberType)
+    {
+        mNumber=pNumber;
+        mNumberType=pNumberType;
+    }
+    @NonNull
+    @Override
+    public NumberViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i)
+    {
+        LinearLayout numberLayout=(LinearLayout) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.phone_number_items,viewGroup,false);
+        numberLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+//                mListener.dialNumber(mNumber.get(i));
+            }
+        });
+        return new NumberViewHolder(numberLayout);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull NumberViewHolder numberViewHolder, int i)
+    {
+        TextView numberText= numberViewHolder.mLinearLayout.findViewById(R.id.number_display_text);
+        numberText.setText(mNumber.get(i));
+        TextView numberType= numberViewHolder.mLinearLayout.findViewById(R.id.number_type_display);
+        switch (mNumberType.get(i))
+        {
+            case 1:
+                numberType.setText("Home");
+                break;
+
+            case 2:
+                numberType.setText("Mobile");
+                break;
+
+            case 3:
+                numberType.setText("Work");
+                break;
+
+            case 4:
+                numberType.setText("Work Fax");
+                break;
+
+            case 5:
+                numberType.setText("Home Fax");
+                break;
+
+            case 6:
+                numberType.setText("Pager");
+                break;
+
+            default:
+                mNumberType.set(i,6);
+                numberType.setText("Other");
+                break;
+        }
+    }
+
+    @Override
+    public int getItemCount()
+    {
+        if(mNumber!=null)
+        {
+            return mNumber.size();
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
 
+    static class NumberViewHolder extends RecyclerView.ViewHolder
+    {
+
+        LinearLayout mLinearLayout;
+        public NumberViewHolder(@NonNull View itemView)
+        {
+            super(itemView);
+            mLinearLayout=(LinearLayout) itemView;
+        }
+    }
+
+    public interface NumberClickListener
+    {
+        public void dialNumber(String pNumber);
+    }
+}
+class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.EmailViewHolder>
+{
+    ArrayList<String> mEmail;
+
+    EmailClickListener mListener;
+
+    EmailAdapter(ArrayList<String> pEmail)
+    {
+        mEmail=pEmail;
+    }
+    @NonNull
+    @Override
+    public EmailViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i)
+    {
+        LinearLayout numberLayout=(LinearLayout) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.email_item,viewGroup,false);
+        numberLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+//                mListener.sendMail(mEmail.get(i));
+            }
+        });
+        return new EmailViewHolder(numberLayout);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull EmailViewHolder emailViewHolder, int i)
+    {
+        TextView emailText= emailViewHolder.mLinearLayout.findViewById(R.id.email_display_text);
+        emailText.setText(mEmail.get(i));
+    }
+
+    @Override
+    public int getItemCount()
+    {
+        if(mEmail!=null)
+        {
+            return mEmail.size();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+
+    static class EmailViewHolder extends RecyclerView.ViewHolder
+    {
+
+        LinearLayout mLinearLayout;
+        public EmailViewHolder(@NonNull View itemView)
+        {
+            super(itemView);
+            mLinearLayout=(LinearLayout) itemView;
+        }
+    }
+
+    public interface EmailClickListener
+    {
+        public void sendMail(String pEmail);
+    }
 }
