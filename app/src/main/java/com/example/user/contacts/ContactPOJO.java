@@ -10,9 +10,7 @@ public class ContactPOJO implements Comparable<Object>,Serializable
 
     private int mId;
     private String mContactName;
-    private ArrayList<String> mContactNumber;
-    private ArrayList<String> mEMailId;
-    private ArrayList<Integer> mNumberType;
+    ArrayList<ContactDetails> mDetails;
     private String mPictureUri;
     private String mAddress;
     private String mWebsite;
@@ -20,6 +18,10 @@ public class ContactPOJO implements Comparable<Object>,Serializable
     ContactPOJO(String pName)
     {
         this.mContactName=pName;
+        this.mDetails=new ArrayList<>();
+        this.mPictureUri="";
+        this.mAddress="";
+        this.mWebsite="";
     }
 
     void setId(int pId)
@@ -32,28 +34,9 @@ public class ContactPOJO implements Comparable<Object>,Serializable
         mContactName = pContactName;
     }
 
-    void setContactNumber(ArrayList<String> pContactNumber)
+    public void setmDetails(ArrayList<ContactDetails> pDetails)
     {
-        if(pContactNumber!=null)
-        {
-            mContactNumber=pContactNumber;
-        }
-    }
-
-    void setEMailId(ArrayList<String> pEMailId)
-    {
-        if(pEMailId!=null)
-        {
-            mEMailId=pEMailId;
-        }
-    }
-
-    void setNumberType(ArrayList<Integer> pNumberType)
-    {
-        if(pNumberType!=null)
-        {
-            mNumberType=pNumberType;
-        }
+        mDetails.addAll(pDetails);
     }
 
     void setPictureUri(String pPictureUri)
@@ -76,24 +59,14 @@ public class ContactPOJO implements Comparable<Object>,Serializable
         return mContactName;
     }
 
-    ArrayList<String> getContactNumber()
-    {
-        return mContactNumber;
-    }
-
-    ArrayList<String> getEMailId()
-    {
-        return mEMailId;
-    }
-
     String getPictureUri()
     {
         return mPictureUri;
     }
 
-    ArrayList<Integer> getNumberType()
+    public ArrayList<ContactDetails> getmDetails()
     {
-        return mNumberType;
+        return mDetails;
     }
 
     String getAddress()

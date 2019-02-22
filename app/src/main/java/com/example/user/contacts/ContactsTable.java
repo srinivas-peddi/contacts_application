@@ -32,7 +32,7 @@ public class ContactsTable
         mDatabaseHelper.close();
     }
 
-    public void saveSingleContact(String pName,ArrayList<String> pNumber, ArrayList<String> pEmail, ArrayList<Integer> pNumberType, String pPicUri, String pAddress, String pWebsite)
+    public void saveSingleContact(String pName,ArrayList<ContactDetails> pDetailList, String pPicUri, String pAddress, String pWebsite)
     {
         try
         {
@@ -45,19 +45,13 @@ public class ContactsTable
             Log.v("DB"," "+mContactDB.insert(DatabaseHelper.RAW_CONTACT, null, addNewContact));
             addNewContact.clear();
             int id=getID(pName);
-            for(int i=0;i<pNumber.size();i++)
+            for(int i=0;i<pDetailList.size();i++)
             {
                 addNewContact.put(DatabaseHelper.CONTACT_ID,id);
-                addNewContact.put(DatabaseHelper.NUMBER,pNumber.get(i));
-                addNewContact.put(DatabaseHelper.NUMBER_TYPE,pNumberType.get(i));
+                addNewContact.put(DatabaseHelper.NUMBER_EMAIL,pDetailList.get(i).getmNumberOrEmail());
+                addNewContact.put(DatabaseHelper.NUMBER_EMAIL_TYPE,pDetailList.get(i).getmNumberOrEmailType());
+                addNewContact.put(DatabaseHelper.DETAIL_TYPE,pDetailList.get(i).getmDetailType());
                 mContactDB.insert(DatabaseHelper.CONTACT_DETAILS,null,addNewContact);
-                addNewContact.clear();
-            }
-            for(String email:pEmail)
-            {
-                addNewContact.put(DatabaseHelper.CONTACT_ID,id);
-                addNewContact.put(DatabaseHelper.EMAIL,email);
-                mContactDB.insert(DatabaseHelper.EMAIL_DETAILS,null,addNewContact);
                 addNewContact.clear();
             }
             mContactDB.setTransactionSuccessful();
@@ -84,29 +78,16 @@ public class ContactsTable
                 addNewContact.put(DatabaseHelper.WEBSITE,contact.getWebsite());
                 mContactDB.insert(DatabaseHelper.RAW_CONTACT, null, addNewContact);
                 addNewContact.clear();
-                ArrayList<String> contactNumbers=contact.getContactNumber();
-                ArrayList<Integer> numberType=contact.getNumberType();
+                ArrayList<ContactDetails> details= contact.getmDetails();
                 int id=getID(name);
-                if(contactNumbers!=null)
+                if(details!=null)
                 {
-                    for(int i=0;i<contact.getContactNumber().size();i++)
+                    for(int i=0;i<details.size();i++)
                     {
                         addNewContact.put(DatabaseHelper.CONTACT_ID,id);
-                        addNewContact.put(DatabaseHelper.NUMBER_EMAIL,contactNumbers.get(i));
-                        addNewContact.put(DatabaseHelper.NUMBER_EMAIL_TYPE,numberType.get(i));
-                        addNewContact.put(DatabaseHelper.DETAIL_TYPE,0);
-                        mContactDB.insert(DatabaseHelper.CONTACT_DETAILS,null,addNewContact);
-                        addNewContact.clear();
-                    }
-                }
-                if(contact.getEMailId()!=null)
-                {
-                    for(String email:contact.getEMailId())
-                    {
-                        addNewContact.put(DatabaseHelper.CONTACT_ID,id);
-                        addNewContact.put(DatabaseHelper.NUMBER_EMAIL,email);
-                        addNewContact.put(DatabaseHelper.NUMBER_EMAIL_TYPE,email);
-                        addNewContact.put(DatabaseHelper.DETAIL_TYPE,1);
+                        addNewContact.put(DatabaseHelper.NUMBER_EMAIL,details.get(i).getmNumberOrEmail());
+                        addNewContact.put(DatabaseHelper.NUMBER_EMAIL_TYPE,details.get(i).getmNumberOrEmailType());
+                        addNewContact.put(DatabaseHelper.DETAIL_TYPE,details.get(i).getmDetailType());
                         mContactDB.insert(DatabaseHelper.CONTACT_DETAILS,null,addNewContact);
                         addNewContact.clear();
                     }
@@ -138,43 +119,40 @@ public class ContactsTable
 
     }
 
-    public Cursor fetchNumbers(String pName)
+    public  Cursor fetchDetails(String pName)
     {
-        return mContactDB.query(DatabaseHelper.CONTACT_DETAILS,new String[]{DatabaseHelper.NUMBER,DatabaseHelper.NUMBER_TYPE},DatabaseHelper.CONTACT_ID+" =?",new String[]{""+getID(pName)},null,null,null);
-    }
-
-    public  Cursor fetchEmailIDs(String pName)
-    {
-        return mContactDB.query(DatabaseHelper.EMAIL_DETAILS,new String[]{DatabaseHelper.EMAIL},DatabaseHelper.CONTACT_ID+" =?",new String[]{""+getID(pName)},null,null,null);
+        return mContactDB.query(DatabaseHelper.CONTACT_DETAILS,new String[]{DatabaseHelper.ID,DatabaseHelper.NUMBER_EMAIL,DatabaseHelper.NUMBER_EMAIL_TYPE,DatabaseHelper.DETAIL_TYPE},DatabaseHelper.CONTACT_ID+"=?",new String[]{""+getID(pName)},null,null,DatabaseHelper.DETAIL_TYPE+"ASC");
     }
 
     public boolean checkDBForNumber(String pNumber)
     {
-        return mContactDB.query(DatabaseHelper.CONTACT_DETAILS,new String[]{DatabaseHelper.NUMBER},DatabaseHelper.NUMBER+"=?",new String[]{pNumber},null,null,null)==null;
+        return mContactDB.query(DatabaseHelper.CONTACT_DETAILS,new String[]{DatabaseHelper.NUMBER_EMAIL},DatabaseHelper.NUMBER_EMAIL+"=?",new String[]{pNumber},null,null,null)==null;
     }
 
-    public void update(String pOldName,String pNewName, ArrayList<String> pNumber, ArrayList<String> pEmail, ArrayList<Integer> pNumberType, String pPicUri,String pAddress, String pWebsite)
+    public void update(String pOldName,ArrayList<Integer> pChangedIds, ContactPOJO contact)
     {
-
         int id=getID(pOldName);
-        ContentValues addNewContact=new ContentValues();
-        addNewContact.put(DatabaseHelper.NAME,pNewName);
-        addNewContact.put(DatabaseHelper.PIC_URI,pPicUri);
-        addNewContact.put(DatabaseHelper.ADDRESS,pAddress);
-        addNewContact.put(DatabaseHelper.WEBSITE,pWebsite);
-        mContactDB.update(DatabaseHelper.RAW_CONTACT,addNewContact,DatabaseHelper.ID,new String[]{""+id});
-        for(int i=0;i<pNumber.size();i++)
+        ContentValues updateContactValues=new ContentValues();
+        updateContactValues.put(DatabaseHelper.NAME,contact.getContactName());
+        updateContactValues.put(DatabaseHelper.PIC_URI,contact.getPictureUri());
+        updateContactValues.put(DatabaseHelper.ADDRESS,contact.getAddress());
+        updateContactValues.put(DatabaseHelper.WEBSITE,contact.getWebsite());
+        mContactDB.update(DatabaseHelper.RAW_CONTACT,updateContactValues,DatabaseHelper.ID,new String[]{""+id});
+        updateContactValues.clear();
+        for(int changedId:pChangedIds)
         {
-            addNewContact.put(DatabaseHelper.NUMBER,pNumber.get(i));
-            addNewContact.put(DatabaseHelper.NUMBER_TYPE,pNumberType.get(i));
-            mContactDB.insert(DatabaseHelper.CONTACT_DETAILS,null,addNewContact);
-            addNewContact.clear();
-        }
-        for(String email:pEmail)
-        {
-            addNewContact.put(DatabaseHelper.EMAIL,email);
-            mContactDB.insert(DatabaseHelper.EMAIL_DETAILS,null,addNewContact);
-            addNewContact.clear();
+            ContactDetails detail=contact.getmDetails().get(changedId);
+            if(!detail.getmNumberOrEmail().equals(""))
+            {
+                updateContactValues.put(DatabaseHelper.NUMBER_EMAIL,detail.getmNumberOrEmail());
+                updateContactValues.put(DatabaseHelper.NUMBER_EMAIL_TYPE,detail.getmNumberOrEmailType());
+                updateContactValues.put(DatabaseHelper.DETAIL_TYPE,detail.getmDetailType());
+                mContactDB.update(DatabaseHelper.CONTACT_DETAILS,updateContactValues,DatabaseHelper.ID,new String[]{""+changedId});
+            }
+            else
+            {
+                mContactDB.delete(DatabaseHelper.CONTACT_DETAILS,DatabaseHelper.ID+" =? ",new String[]{""+detail.getmId()});
+            }
         }
     }
 
@@ -183,7 +161,6 @@ public class ContactsTable
         String id[]={""+getID(pName)};
         mContactDB.delete(DatabaseHelper.RAW_CONTACT, DatabaseHelper.NAME + "=?", id);
         mContactDB.delete(DatabaseHelper.CONTACT_DETAILS,DatabaseHelper.CONTACT_ID+" =? ",id);
-        mContactDB.delete(DatabaseHelper.EMAIL_DETAILS,DatabaseHelper.CONTACT_ID+" =? ",id);
     }
 
 }
